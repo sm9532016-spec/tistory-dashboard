@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 인프라 시장 일일 뉴스 분석 리포트</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        .tab-content {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            will-change: opacity, transform;
+        }
+        .tab-content.hidden {
+            display: block !important;
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
+            height: 0;
+            overflow: hidden;
+        }
+        .tab-btn.active {
+            background-color: var(--color-active-tab);
+            border-bottom: 2px solid var(--color-border-color);
+            transform: translateY(1px);
+        }
+        .card-item ul {
+            list-style-position: outside;
+            padding-left: 1.25rem;
+        }
+        .card-item ul li::marker {
+            color: #CCE5FF; 
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'base-bg': '#F8F8F8',
+                        'inactive-tab': '#FFFFCC',
+                        'active-tab': '#CCE5FF',
+                        'border-color': '#CCFFCC',
+                        'main-text': '#333333',
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
+                        'lifted': '0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07)',
+                    }
+                },
+            },
+        };
+
+        // JS variables for CSS custom properties
+        document.documentElement.style.setProperty('--color-active-tab', tailwind.config.theme.extend.colors['active-tab']);
+        document.documentElement.style.setProperty('--color-border-color', tailwind.config.theme.extend.colors['border-color']);
+    </script>
+</head>
+<body class="bg-base-bg font-sans text-main-text antialiased">
+
+    <div id="dashboard" class="max-w-7xl mx-auto p-2 sm:p-4 lg:p-6">
+        
+        <header class="bg-active-tab p-6 rounded-t-xl shadow-soft">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-main-text tracking-tight">AI 인프라 시장 일일 뉴스 분석 리포트</h1>
+            <p class="text-sm sm:text-base text-main-text/80 mt-2 font-medium">2025년 12월 8-9일 (지난 24시간)</p>
+        </header>
+
+        <nav class="flex flex-wrap border-b border-border-color bg-inactive-tab" aria-label="Tabs">
+            <button class="tab-btn text-sm sm:text-base font-bold py-3 px-4 sm:px-6 text-center transition-all duration-300 ease-in-out flex-grow sm:flex-grow-0" data-tab="summary">총괄 요약</button>
+            <button class="tab-btn text-sm sm:text-base font-bold py-3 px-4 sm:px-6 text-center transition-all duration-300 ease-in-out flex-grow sm:flex-grow-0" data-tab="gpu-hbm">GPU 및 HBM</button>
+            <button class="tab-btn text-sm sm:text-base font-bold py-3 px-4 sm:px-6 text-center transition-all duration-300 ease-in-out flex-grow sm:flex-grow-0" data-tab="power-grid">전력 설비 및 그리드</button>
+            <button class="tab-btn text-sm sm:text-base font-bold py-3 px-4 sm:px-6 text-center transition-all duration-300 ease-in-out flex-grow sm:flex-grow-0" data-tab="datacenter">데이터센터 및 냉각</button>
+            <button class="tab-btn text-sm sm:text-base font-bold py-3 px-4 sm:px-6 text-center transition-all duration-300 ease-in-out flex-grow sm:flex-grow-0" data-tab="robotics">로봇 및 피지컬 AI</button>
+        </nav>
+
+        <main class="bg-base-bg p-4 sm:p-6 rounded-b-xl shadow-soft min-h-[60vh]">
+            
+            <!-- Tab 1: 총괄 요약 -->
+            <div id="summary" class="tab-content space-y-6">
+                <section>
+                    <h2 class="text-xl font-bold p-4 bg-active-tab rounded-lg">II. 투자 관점 3가지 거시적 인사이트</h2>
+                    <div class="space-y-4 mt-4">
+                        <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                            <h3 class="font-bold text-lg mb-2">인사이트 1: HBM 메모리 공급망 재편</h3>
+                            <div class="space-y-2 text-sm text-main-text/90">
+                                <p><strong class="font-semibold">분석 근거:</strong> 삼성전자가 HBM4 생산 준비를 완료하고 구글 TPU향 HBM 공급 비중을 60% 이상으로 확대한 반면, 경쟁사들은 열 병목 문제 해결에 난항을 겪고 있음.</p>
+                                <p><strong class="font-semibold">시장 영향:</strong> HBM 시장에서 삼성의 독점적 지위가 강화될 가능성이 높으며, 이는 GPU 생태계 전반의 가격 및 공급 안정성에 영향을 미칠 것.</p>
+                                <p><strong class="font-semibold">실행 가능 행동:</strong>
+                                    <ul>
+                                        <li>삼성전자 및 관련 소부장 기업에 대한 투자 비중 확대 고려.</li>
+                                        <li>경쟁사 기술 개발 동향 및 수율 문제 해결 여부 지속 모니터링.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </article>
+                        <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                            <h3 class="font-bold text-lg mb-2">인사이트 2: 데이터센터 전력 병목 심화</h3>
+                            <p><strong class="font-semibold">분석 근거:</strong> BloombergNEF는 데이터센터 전력 수요가 2035년까지 3배 증가할 것으로 예측. NextEra Energy와 Google의 대규모 협력은 전력 공급이 데이터센터 확장의 핵심 변수임을 시사.</p>
+                            <p><strong class="font-semibold">시장 영향:</strong> 전력 설비, 스마트 그리드, 에너지 효율 솔루션 기업의 가치가 급증할 것이며, 전력 확보가 어려운 지역의 데이터센터 경쟁력은 약화될 것.</p>
+                            <p><strong class="font-semibold">실행 가능 행동:</strong>
+                                <ul>
+                                    <li>전력 인프라 관련 기업(유틸리티, 변압기, 케이블 등) 포트폴리오 편입 검토.</li>
+                                    <li>데이터센터 기업 선정 시, 전력 확보 능력 및 재생에너지 사용 비중을 핵심 평가 기준으로 활용.</li>
+                                </ul>
+                            </p>
+                        </article>
+                        <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                            <h3 class="font-bold text-lg mb-2">인사이트 3: 피지컬 AI 시장 본격 진입</h3>
+                            <p><strong class="font-semibold">분석 근거:</strong> EY, SoftBank, Orbbec 등 다양한 산업군의 글로벌 기업들이 NVIDIA 플랫폼을 기반으로 한 피지컬 AI 및 휴머노이드 로봇 시장에 대규모 투자 및 진출을 공식화함.</p>
+                            <p><strong class="font-semibold">시장 영향:</strong> AI의 적용 범위가 소프트웨어를 넘어 물리적 세계로 확장됨에 따라, 로봇 하드웨어, 정밀 제어 부품, 관련 소프트웨어 시장이 개화할 것.</p>
+                            <p><strong class="font-semibold">실행 가능 행동:</strong>
+                                <ul>
+                                    <li>로봇 제조사, 센서 및 액추에이터 기업 등 피지컬 AI 밸류체인에 대한 초기 투자 기회 모색.</li>
+                                    <li>산업 자동화 및 물류 혁신과 연계하여 피지컬 AI 도입 효과가 클 수 있는 산업군 주시.</li>
+                                </ul>
+                            </p>
+                        </article>
+                    </div>
+                </section>
+                <section>
+                    <h2 class="text-xl font-bold p-4 bg-active-tab rounded-lg">III. 종합 평가 및 유의사항</h2>
+                    <div class="bg-white p-5 border border-border-color rounded-lg shadow-soft mt-4 space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <span class="text-2xl mt-1">✅</span>
+                            <div>
+                                <h4 class="font-bold">데이터 신뢰도</h4>
+                                <p class="text-sm text-main-text/90">모든 정보는 공식 기업 보도, 업계 조사기관(BloombergNEF, 451 Research, Counterpoint Research) 보고서, 정부 공식 발표에 기반함</p>
+                            </div>
+                        </div>
+                         <div class="flex items-start space-x-3">
+                            <span class="text-2xl mt-1">⚠️</span>
+                            <div>
+                                <h4 class="font-bold">정보 부족 영역</h4>
+                                <p class="text-sm text-main-text/90">중국 데이터센터/로봇 시장 영향 평가 불가: 지난 24시간 관련 뉴스 부족 → 중국 AI 인프라 투자 규모 및 동향 확인 필요</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab 2: GPU 및 HBM -->
+            <div id="gpu-hbm" class="tab-content hidden space-y-6">
+                 <h2 class="text-xl font-bold p-4 bg-active-tab rounded-lg">[분야 1] GPU 및 HBM (반도체)</h2>
+                 <div class="space-y-4">
+                    <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 1: IMEC, 3D HBM-온-GPU 아키텍처 열 병목 현상 해결</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> 벨기에 반도체 연구 허브 IMEC이 3D 스태킹 구조의 HBM-온-GPU 아키텍처에서 발생하는 심각한 열 문제를 해결할 수 있는 새로운 냉각 기술을 개발했다고 발표.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-08</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">AnandTech</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>차세대 HBM 및 GPU 패키징 기술의 상용화를 앞당길 수 있는 핵심 기술.</li>
+                                    <li>HBM 경쟁사들이 겪고 있는 열 문제 해결의 실마리가 될 수 있음.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 2: 삼성전자, HBM4 생산 준비 완료 (PRA 통과)</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> 삼성전자가 차세대 HBM4 메모리의 파일럿 생산 라인에 대한 공정 신뢰성 평가(PRA)를 통과하여 양산 준비를 마쳤다고 공식 발표.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-09</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Samsung Newsroom</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>경쟁사 대비 최소 1~2분기 앞선 HBM4 시장 진입으로 초기 시장 선점 효과 극대화 예상.</li>
+                                    <li>HBM 시장 내 삼성의 기술 리더십 및 가격 결정력 강화.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 3: 삼성전자, 구글 TPU HBM 60% 이상 공급</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> Counterpoint Research 보고서에 따르면, 2025년 4분기 구글의 차세대 TPU에 탑재되는 HBM 메모리의 60% 이상을 삼성전자가 공급하는 것으로 확인됨.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-08</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Counterpoint Research</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>특정 고객사에 대한 높은 점유율은 안정적인 매출 확보 및 파트너십 강화를 의미.</li>
+                                    <li>NVIDIA 외 주요 AI 가속기 시장으로의 공급망 다변화 성공.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                 </div>
+            </div>
+
+            <!-- Tab 3: 전력 설비 및 그리드 -->
+            <div id="power-grid" class="tab-content hidden space-y-6">
+                <h2 class="text-xl font-bold p-4 bg-active-tab rounded-lg">[분야 2] 전력 설비 및 그리드</h2>
+                <div class="space-y-4">
+                    <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 4: NextEra Energy × Google Cloud, 기가와트급 데이터센터 캠퍼스 개발 협력</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> 미국 최대 전력회사 NextEra Energy가 Google Cloud와 협력하여, 기가와트(GW)급 전력을 사용하는 대규모 AI 데이터센터 캠퍼스를 공동 개발 및 운영하기로 합의.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-08</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">NextEra Energy Press</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>AI 데이터센터 건설의 패러다임이 '부지' 중심에서 '전력' 중심으로 이동하고 있음을 시사.</li>
+                                    <li>전력 회사와 빅테크 간의 직접적인 파트너십 모델이 확산될 가능성.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 5: 데이터센터 전력 수요 2035년까지 3배 증가 예상</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> BloombergNEF는 최신 보고서에서 AI 모델의 고도화와 데이터양 증가로 인해 전 세계 데이터센터의 전력 수요가 2035년까지 현재의 3배 수준으로 급증할 것이라고 전망.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-09</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">BloombergNEF</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>전력 인프라(발전, 송배전, 변압기) 시장의 장기적 성장 동력 확보.</li>
+                                    <li>에너지 효율화 및 스마트 그리드 기술의 중요성 부각.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 6: 영국 AI 에너지 위원회, 그리드 개혁 논의</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> 영국 정부가 신설한 'AI 에너지 위원회'가 첫 회의를 열고, AI 데이터센터의 폭발적인 전력 수요에 대응하기 위한 국가 전력망(그리드) 개혁 방안을 논의하기 시작.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-08</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Gov.uk</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>AI 인프라 투자가 국가 에너지 정책의 핵심 의제로 부상.</li>
+                                    <li>각국의 그리드 현대화 및 규제 완화 정책이 관련 산업에 긍정적 영향을 미칠 것.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Tab 4: 데이터센터 및 냉각 기술 -->
+            <div id="datacenter" class="tab-content hidden space-y-6">
+                 <h2 class="text-xl font-bold p-4 bg-active-tab rounded-lg">[분야 3] 데이터센터 및 냉각 기술</h2>
+                <div class="space-y-4">
+                    <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 7: AIRSYS, PowerOne AI-era 냉각 솔루션 출시</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> 데이터센터 냉각 솔루션 전문 기업 AIRSYS가 고밀도 AI 서버랙의 발열 문제를 해결하기 위한 차세대 액체 냉각 시스템 'PowerOne'을 공식 출시.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-09</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Data Center Dynamics</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>AI 시대에 공랭식에서 액체 냉각(Liquid Cooling)으로의 전환이 가속화될 것.</li>
+                                    <li>Vertiv, CoolIT Systems 등 기존 액체 냉각 시장 강자들과의 경쟁 구도 주목.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 8: NextEra Energy × Google, AI 기반 전력망 최적화 기술 협력</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> 데이터센터 협력과 별개로, NextEra와 Google은 AI를 활용하여 전력망의 부하를 예측하고, 재생에너지 발전량을 최적화하는 기술을 공동 개발하기로 함.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-08</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Google Cloud Blog</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>AI 기술이 AI 인프라(전력망)를 운영하고 효율화하는 데 역으로 활용되는 선순환 구조 형성.</li>
+                                    <li>스마트 그리드 소프트웨어 및 에너지 관리 시스템(EMS) 시장의 성장 가능성 확대.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Tab 5: 로봇 및 피지컬 AI -->
+            <div id="robotics" class="tab-content hidden space-y-6">
+                 <h2 class="text-xl font-bold p-4 bg-active-tab rounded-lg">[분야 4] 로봇 및 피지컬 AI</h2>
+                <div class="space-y-4">
+                    <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 9: EY, NVIDIA 기반 피지컬 AI 플랫폼 출시 및 EY.ai Lab 개설</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> 글로벌 컨설팅 기업 EY가 NVIDIA Omniverse 플랫폼을 기반으로 공장, 창고, 도시 등의 디지털 트윈을 구축하고 시뮬레이션하는 피지컬 AI 플랫폼을 출시하고, 관련 연구를 위한 'EY.ai Lab'을 개설.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-09</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">EY Press Release</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>컨설팅, 소프트웨어 등 비제조 기업들도 피지컬 AI 시장에 적극적으로 진출하고 있음.</li>
+                                    <li>디지털 트윈 기술이 피지컬 AI의 핵심 기반 기술로 자리매김.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                     <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 10: Orbbec × Advantech, iREX 2025에서 NVIDIA 기반 휴머노이드 로봇 플랫폼 선보임</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> 3D 비전 센서 기업 Orbbec과 산업용 컴퓨터 기업 Advantech가 협력하여, NVIDIA Jetson 플랫폼을 탑재한 휴머노이드 로봇 개발 플랫폼을 iREX 2025에서 공개할 예정.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-08</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Robotics & Automation News</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>NVIDIA가 로봇 시장에서도 핵심적인 '두뇌' 역할을 하는 플랫폼 공급자로 자리잡고 있음.</li>
+                                    <li>다양한 전문 기술을 가진 기업들의 협력을 통해 로봇 개발 생태계가 빠르게 확장 중.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                     <article class="bg-white p-5 border border-border-color rounded-lg shadow-soft hover:shadow-lifted transition-shadow duration-300 card-item">
+                        <h3 class="text-lg font-bold text-main-text mb-3">📰 뉴스 11: SoftBank, 산업 로봇 제조사 ABB 로보틱스 $5.4B 인수</h3>
+                        <div class="space-y-3 text-sm text-main-text/90">
+                            <p><strong class="font-semibold">요약:</strong> 소프트뱅크 그룹이 스위스의 대표적인 산업용 로봇 제조사인 ABB 로보틱스를 54억 달러에 인수한다고 발표. AI 기술을 접목하여 차세대 스마트 팩토리 솔루션을 주도하겠다는 계획.</p>
+                            <p><strong class="font-semibold">발행일:</strong> 2025-12-09</p>
+                            <p><strong class="font-semibold">출처:</strong> <a href="#" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Financial Times</a></p>
+                            <div>
+                                <strong class="font-semibold">투자 관점 핵심 사항:</strong>
+                                <ul>
+                                    <li>자본력을 갖춘 빅테크/투자 기업들이 전통적인 로봇 강자를 인수하며 시장에 진입하는 M&A 활성화.</li>
+                                    <li>AI 소프트웨어 역량과 로봇 하드웨어 제조 역량의 결합이 시장의 핵심 경쟁력이 될 것.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function switchTab(targetTabId) {
+                tabContents.forEach(content => {
+                    if (content.id === targetTabId) {
+                        // Use a timeout to allow the 'hidden' class to be removed before starting the transition
+                        setTimeout(() => content.classList.remove('hidden'), 50);
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+                
+                tabButtons.forEach(button => {
+                    if (button.dataset.tab === targetTabId) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchTab(button.dataset.tab);
+                });
+            });
+
+            // Set initial state
+            if (tabButtons.length > 0) {
+                switchTab(tabButtons[0].dataset.tab);
+            }
+        });
+    </script>
+</body>
+</html>
