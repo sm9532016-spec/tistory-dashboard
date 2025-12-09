@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>시장 정류장 대시보드</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 스타일은 원문 템플릿 그대로 -->
+  <style>
+    /* (질문에 주신 CSS를 그대로 사용합니다) */
+    :root {
+      --bg-main: #f7f1e8;
+      --bg-card: #fff7ee;
+      --bg-card-strong: #f2e0cf;
+      --brown-deep: #7b4b2a;
+      --brown-mid: #a06b3c;
+      --brown-light: #c9976b;
+      --accent: #f3b64b;
+      --text-main: #3c2a1b;
+      --text-muted: #7a6554;
+      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.06);
+      --radius-lg: 18px;
+      --radius-xl: 26px;
+      --transition-fast: 0.2s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+    .top-bar {
+      background: linear-gradient(135deg, var(--brown-deep), var(--brown-mid));
+      color: #fdf7f0;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-soft);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .top-bar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 24px;
+    }
+    .top-title { font-size: 20px; font-weight: 700; letter-spacing: 0.03em; }
+    .top-sub { font-size: 13px; opacity: 0.9; }
+    .top-pill {
+      margin-left: auto;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background-color: rgba(0, 0, 0, 0.15);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .top-pill span.icon {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.2);
+      font-size: 11px;
+    }
+    .page {
+      max-width: 1200px;
+      margin: 24px auto 60px;
+      padding: 0 16px;
+    }
+    .page-heading { margin-bottom: 22px; }
+    .page-heading h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .page-heading p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .nav-btn {
+      border: none;
+      background-color: #f3e0cf;
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      transition: background-color var(--transition-fast),
+        transform var(--transition-fast), box-shadow var(--transition-fast);
+      white-space: nowrap;
+    }
+    .nav-btn span.icon { font-size: 14px; }
+    .nav-btn:hover {
+      background-color: #f7cf9a;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+    .nav-btn.active {
+      background-color: var(--brown-mid);
+      color: #fffaf1;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+    }
+    .section { display: none; animation: fadeIn 0.25s ease; }
+    .section.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title-badge {
+      padding: 3px 10px;
+      border-radius: 999px;
+      background-color: var(--bg-card-strong);
+      font-size: 11px;
+      color: var(--brown-deep);
+    }
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background-color: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, #ffffff55, transparent 60%);
+      opacity: 0.65;
+      pointer-events: none;
+    }
+    .card-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-title span.icon { font-size: 18px; }
+    .card-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--text-muted);
+    }
+    .card-body {
+      font-size: 13px;
+      color: var(--text-main);
+      position: relative;
+      z-index: 1;
+    }
+    .card-body p + p { margin-top: 4px; }
+    .card-body ul { padding-left: 18px; margin-top: 4px; }
+    .card-body li { margin-bottom: 2px; }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .pill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background-color: #fce6c6;
+      color: var(--brown-deep);
+    }
+    .card-emphasis {
+      background: linear-gradient(135deg, #f6ddc1, #f2c593);
+      color: #3b2617;
+    }
+    .card-emphasis .card-tag {
+      background-color: rgba(0, 0, 0, 0.08);
+      color: #fdf4e3;
+    }
+    .table-like {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .table-like th,
+    .table-like td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .table-like th {
+      text-align: left;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .table-like tbody tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+    .badge-risk {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background-color: #ffe0dd;
+      color: #8a3333;
+    }
+    .badge-good {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background-color: #e1f3d6;
+      color: #486530;
+    }
+    .weight-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .weight-label {
+      width: 80px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .weight-bar-wrap {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background-color: rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    .weight-bar {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #f6b25f, #f08f3a);
+    }
+    .weight-value { font-size: 12px; width: 40px; text-align: right; }
+    .summary-list { list-style: none; font-size: 14px; }
+    .summary-list li + li { margin-top: 6px; }
+    .summary-index {
+      font-weight: 700;
+      margin-right: 4px;
+      color: var(--brown-mid);
+    }
+    @media (max-width: 900px) {
+      .card-grid { grid-template-columns: 1fr; }
+      .top-bar-inner { flex-direction: column; align-items: flex-start; }
+      .top-pill { margin-left: 0; }
+    }
+    @media (max-width: 600px) {
+      .top-bar { padding: 14px 14px; }
+      .top-title { font-size: 18px; }
+      .page-heading h1 { font-size: 20px; }
+      .nav-tabs { overflow-x: auto; padding-bottom: 4px; }
+      .nav-btn { font-size: 12px; padding: 7px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div>
+        <div class="top-title">오늘의 시장 정류장 대시보드</div>
+        <div class="top-sub">
+           초보 투자자용 데일리 리포트 (2025-12-09 기준)
+        </div>
+      </div>
+      <div class="top-pill">
+        <span class="icon">📅</span>
+        <span>2025-12-09 장마감 기준</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="page-heading">
+      <h1>3개월 실전 투자 실행 계획형 리포트</h1>
+      <p>
+        1단계(글로벌 흐름) → 2단계(한국 시장) → 3단계(주도 섹터) → 4단계(주도주)
+        → 5단계(500만원 전략) → 6단계(3줄 요약) 순서로 확인해 주세요.
+      </p>
+    </section>
+
+    <nav class="nav-tabs">
+      <button class="nav-btn active" onclick="showTab('global', this)">
+        <span class="icon">🌍</span> 글로벌 흐름
+      </button>
+      <button class="nav-btn" onclick="showTab('korea', this)">
+        <span class="icon">🇰🇷</span> KR 한국 시장
+      </button>
+      <button class="nav-btn" onclick="showTab('sectors', this)">
+        <span class="icon">📊</span> 주도 섹터
+      </button>
+      <button class="nav-btn" onclick="showTab('stocks', this)">
+        <span class="icon">⭐</span> 주도주 후보
+      </button>
+      <button class="nav-btn" onclick="showTab('strategy', this)">
+        <span class="icon">💰</span> 500만원 전략
+      </button>
+      <button class="nav-btn" onclick="showTab('summary', this)">
+        <span class="icon">📋</span> 3줄 요약
+      </button>
+    </nav>
+
+    <!-- 1단계: 글로벌 큰 흐름 -->
+    <section id="global" class="section active">
+      <div class="section-title">
+        1단계 │ 글로벌 큰 흐름
+        <span class="section-title-badge">먼저 시장의 물줄기를 확인합니다</span>
+      </div>
+      <p class="section-subtitle">
+        달러·금리·금·글로벌 REIT·나스닥 흐름을 통해 오늘 자금의 방향과 시장
+        정류장을 판단합니다.
+      </p>
+
+      <div class="card-grid">
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📊</span> 핵심 지표 요약
+            </div>
+            <span class="card-tag">글로벌 5대 지표</span>
+          </div>
+          <div class="card-body">
+            <p><strong>달러 인덱스(DXY)</strong> — 99pt 초반, 1년 기준 완만한 약세 추세로 신흥국·위험자산에 우호적인 환경입니다.</p>
+            <p><strong>미국 10년 국채 금리</strong> — 약 4.17% 고점 박스권으로, 고밸류 성장주에는 단기 부담 요인입니다.</p>
+            <p><strong>국제 금 가격</strong> — 온스당 4,200달러대 고점권으로, 지정학·금융 불안에 대한 헤지 수요가 유지되는 구간입니다.</p>
+            <p><strong>글로벌 REIT</strong> — 연중 회복세지만 12월 초에는 -1~2% 조정, AI·성장주 대비 수익률이 낮습니다.</p>
+            <p><strong>나스닥 지수</strong> — 2만3천pt 중반에서 소폭 조정, AI·메가캡 과열 이후 숨 고르기 구간입니다.</p>
+          </div>
+        </article>
+
+        <article class="card card-emphasis">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🚌</span> 오늘의 시장 정류장
+            </div>
+            <span class="card-tag">1단계 결론</span>
+          </div>
+          <div class="card-body">
+            <p>
+              달러 약세 기조 속에서 금리가 4%대 고점 박스에 머물고, 나스닥·AI는 단기 조정에 들어간
+              <strong>“성장주 정류장을 한 번 지난 구간”</strong>입니다.
+            </p>
+            <p>
+              대형 AI·반도체는 속도 조절, 대신 <strong>테마·바이오·비철·설비투자</strong> 쪽으로 자금이 순환하기 좋은 환경입니다.
+            </p>
+            <div class="pill-row">
+              <span class="pill">달러 약세 환경</span>
+              <span class="pill">금리 고점 박스</span>
+              <span class="pill">테마 로테이션 구간</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 2단계: 한국 시장 -->
+    <section id="korea" class="section">
+      <div class="section-title">
+        2단계 │ 한국 시장 위치
+        <span class="section-title-badge">코스피·코스닥 체온 체크</span>
+      </div>
+      <p class="section-subtitle">
+        코스피·코스닥의 52주 위치, 수급, 거래량을 보고 지금이 추세장인지 박스권인지
+        판단합니다.
+      </p>
+
+      <div class="card-grid">
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📈</span> 코스피 · 코스닥
+            </div>
+            <span class="card-tag">지수 & 위치</span>
+          </div>
+          <div class="card-body">
+            <p><strong>코스피</strong> — 4,143.55(-0.27%), 52주 고가권에서 쉬어가는 <strong>고점 박스 조정</strong> 구간입니다.</p>
+            <p><strong>코스닥</strong> — 931.35(+0.38%)로 상대 강세, 테마·중소형 중심의 변동성 장세가 전개되고 있습니다.</p>
+            <p>지수 구조는 <strong>“코스피 박스권 + 코스닥 테마 추세장”</strong>에 해당합니다.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">💼</span> 수급 & 분위기
+            </div>
+            <span class="card-tag">외국인 · 기관</span>
+          </div>
+          <div class="card-body">
+            <p>수급은 코스닥에서 개인이 +2,135억 순매수, 외국인·기관은 동반 매도 구도로, 전형적인 테마·개인 주도 장세입니다.</p>
+            <ul>
+              <li>코스피: 개인·외국인 동반 매도, 기관 방어성 매수.</li>
+              <li>코스닥: 개인 공격적 매수, 외국인·기관 차익실현.</li>
+            </ul>
+            <p>이를 종합하면 지수는 박스권이지만, 세부 섹터에서는 <strong>단기 추세 형성 구간</strong>으로 볼 수 있습니다.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 3단계: 주도 섹터 -->
+    <section id="sectors" class="section">
+      <div class="section-title">
+        3단계 │ 오늘의 주도 섹터
+        <span class="section-title-badge">자금이 실제로 몰리는 곳</span>
+      </div>
+      <p class="section-subtitle">
+        거래량 폭증, 52주 고가 인접 종목 증가, 해외 지표와 연관성을 기준으로 2~4개
+        섹터를 뽑습니다.
+      </p>
+
+      <div class="card-grid">
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">💉</span> 섹터 ① 바이오·제약
+            </div>
+            <span class="card-tag">테마·정책 모멘텀</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li>낙태/피임, 바이오시밀러 테마가 테마 수익률 상위에 위치합니다.</li>
+              <li>현대약품, 삼천당제약 등 관련 종목이 높은 등락률·거래대금을 기록했습니다.</li>
+              <li>정책·규제 이슈와 방어주 성격이 결합된 단기 강한 모멘텀 섹터입니다.</li>
+            </ul>
+            <div class="pill-row">
+              <span class="pill">단기 급등 가능</span>
+              <span class="pill">뉴스 리스크 주의</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🛒</span> 섹터 ② 전문소매(소비)
+            </div>
+            <span class="card-tag">리테일 모멘텀</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li>전문소매 업종이 업종 수익률 1위, 포니링크·모다이노칩 등이 강세를 보였습니다.</li>
+              <li>연말 소비 시즌과 달러 약세, 경기연착륙 기대가 결합된 소비 테마입니다.</li>
+              <li>단기 스윙 관점의 모멘텀 섹터로 적합하지만, 실적 민감도가 높습니다.</li>
+            </ul>
+            <div class="pill-row">
+              <span class="pill">연말 소비 모멘텀</span>
+              <span class="pill">실적 체크 필수</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">⚙️</span> 섹터 ③ 비철금속·공작기계
+            </div>
+            <span class="card-tag">원자재 · 설비</span>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li>비철금속 업종과 공작기계 테마가 상위권, 서암기계공업 등 급등 종목이 등장했습니다.</li>
+              <li>국제 구리 가격 고점권, AI·데이터센터·전력망 투자 수요와 연결된 스토리입니다.</li>
+              <li>경기·중국 변수에 민감하므로 추세 확인과 리스크 관리가 중요합니다.</li>
+            </ul>
+            <div class="pill-row">
+              <span class="pill">구리·설비 모멘텀</span>
+              <span class="pill">경기 민감 섹터</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 4단계: 주도주 후보 -->
+    <section id="stocks" class="section">
+      <div class="section-title">
+        4단계 │ 주도주 후보
+        <span class="section-title-badge">섹터 안의 대장·중대형주 위주</span>
+      </div>
+      <p class="section-subtitle">
+        각 섹터에서 2~4개 종목을 골라, 52주 위치·거래량·스토리를 기준으로 20%
+        수익 가능성을 점검합니다.
+      </p>
+
+      <article class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">⭐</span> 주도주 리스트
+          </div>
+          <span class="card-tag">오늘의 후보</span>
+        </div>
+        <div class="card-body">
+          <table class="table-like">
+            <thead>
+              <tr>
+                <th>종목명</th>
+                <th>섹터</th>
+                <th>52주 위치 (개념)</th>
+                <th>거래량 (개념)</th>
+                <th>포인트</th>
+                <th>리스크</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>현대약품</td>
+                <td>바이오·제약</td>
+                <td>단기 급등, 52주 고가 인근 가능 구간</td>
+                <td>평균 대비 급증 (테마 상위)</td>
+                <td><span class="badge-good">낙태/피임 테마 대표주, 정책 모멘텀 기대</span></td>
+                <td><span class="badge-risk">이슈 소멸 시 급락, 과열 구간 진입 위험</span></td>
+              </tr>
+              <tr>
+                <td>삼천당제약</td>
+                <td>바이오시밀러</td>
+                <td>중·장기 추세 상단 돌파 시도 구간</td>
+                <td>거래량 회복·증가 패턴</td>
+                <td><span class="badge-good">바이오시밀러 성장 스토리 + 수급 개선</span></td>
+                <td><span class="badge-risk">허가·라이선스 이벤트 지연 리스크</span></td>
+              </tr>
+              <tr>
+                <td>포니링크</td>
+                <td>전문소매</td>
+                <td>업종 랠리 중심, 고점권 변동성</td>
+                <td>연말 소비 모멘텀으로 거래 급증</td>
+                <td><span class="badge-good">업종 1위 수익률, 리테일 모멘텀</span></td>
+                <td><span class="badge-risk">실적 부진 시 리레이팅 하락 가능</span></td>
+              </tr>
+              <tr>
+                <td>서암기계공업</td>
+                <td>공작기계</td>
+                <td>단기 상한가/돌파 구간</td>
+                <td>단기 폭발적 거래</td>
+                <td><span class="badge-good">설비투자·기계 업황 회복 기대</span></td>
+                <td><span class="badge-risk">급등 후 변동성, 재료 소멸 리스크</span></td>
+              </tr>
+              <tr>
+                <td>비철·구리 관련주</td>
+                <td>비철금속</td>
+                <td>국제 구리 고점과 동행 구간</td>
+                <td>원자재 테마 수급 유입</td>
+                <td><span class="badge-good">AI·전력망·전기차 수요 스토리 연결</span></td>
+                <td><span class="badge-risk">원자재 가격·중국 경기 변수 민감</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- 5단계: 500만원 전략 -->
+    <section id="strategy" class="section">
+      <div class="section-title">
+        5단계 │ 500만원 투자 전략
+        <span class="section-title-badge">비중·리스크 관리</span>
+      </div>
+      <p class="section-subtitle">
+        오늘 시장 정류장을 기준으로 공격형/중립형/안전형 중 전략을 선택하고,
+        섹터별 비중 배분을 제안합니다.
+      </p>
+
+      <div class="card-grid">
+        <article class="card card-emphasis">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🧭</span> 오늘의 전략 유형
+            </div>
+            <span class="card-tag">전략 요약</span>
+          </div>
+          <div class="card-body">
+            <p><strong>결론:</strong> 지수는 고점 박스권, 코스닥은 테마 과열이므로 <strong>중립형(공격 6 : 방어·현금 4) 전략</strong>이 적절합니다.</p>
+            <p>손절 -7~-10% 사전 설정, 단일 종목 최대 20% 비중, 상한가·급등 직후 추격매수 금지 원칙을 적용합니다.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📊</span> 섹터별 비중 (500만원 기준)
+            </div>
+            <span class="card-tag">오늘 추천 비중</span>
+          </div>
+          <div class="card-body">
+            <div class="weight-row">
+              <div class="weight-label">바이오·제약</div>
+              <div class="weight-bar-wrap">
+                <div class="weight-bar" style="width: 30%"></div>
+              </div>
+              <div class="weight-value">30%</div>
+            </div>
+            <div class="weight-row">
+              <div class="weight-label">전문소매(소비)</div>
+              <div class="weight-bar-wrap">
+                <div class="weight-bar" style="width: 20%"></div>
+              </div>
+              <div class="weight-value">20%</div>
+            </div>
+            <div class="weight-row">
+              <div class="weight-label">비철·공작기계</div>
+              <div class="weight-bar-wrap">
+                <div class="weight-bar" style="width: 20%"></div>
+              </div>
+              <div class="weight-value">20%</div>
+            </div>
+            <div class="weight-row">
+              <div class="weight-label">대형/배당</div>
+              <div class="weight-bar-wrap">
+                <div class="weight-bar" style="width: 15%"></div>
+              </div>
+              <div class="weight-value">15%</div>
+            </div>
+            <div class="weight-row">
+              <div class="weight-label">현금</div>
+              <div class="weight-bar-wrap">
+                <div class="weight-bar" style="width: 15%"></div>
+              </div>
+              <div class="weight-value">15%</div>
+            </div>
+            <p style="margin-top: 8px; font-size: 12px; color: var(--text-muted)">
+              위 비중은 3개월 스윙 기준 예시이며, 지수 급락/급등 시 현금 비중을 10~20% 범위에서 탄력적으로 조절합니다.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 6단계: 3줄 요약 -->
+    <section id="summary" class="section">
+      <div class="section-title">
+        6단계 │ 오늘의 3줄 요약
+        <span class="section-title-badge">핵심만 다시 한 번</span>
+      </div>
+      <p class="section-subtitle">
+        바쁜 날에는 이 3줄만 봐도 오늘 시장의 방향과 행동 요령을 이해할 수
+        있도록 정리합니다.
+      </p>
+
+      <article class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📋</span> 핵심 인사이트
+          </div>
+          <span class="card-tag">데일리 체크</span>
+        </div>
+        <div class="card-body">
+          <ul class="summary-list">
+            <li>
+              <span class="summary-index">①</span>
+              글로벌은 달러 약세·금리 고점·나스닥 조정, 한국은 코스피 박스권 + 코스닥 테마 장세입니다.
+            </li>
+            <li>
+              <span class="summary-index">②</span>
+              바이오·제약, 전문소매, 비철·공작기계 섹터로 자금이 몰려 단기 주도 섹터로 작동하고 있습니다.
+            </li>
+            <li>
+              <span class="summary-index">③</span>
+              500만원은 성장·테마 60~70% + 방어·현금 30~40%의 중립형 전략으로 운용하며, 손절·분산·추격금지 3가지만 지키는 것을 권장합니다.
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    function showTab(tabName, btn) {
+      const sections = document.querySelectorAll(".section");
+      sections.forEach((section) => {
+        section.classList.remove("active");
+      });
+      const target = document.getElementById(tabName);
+      if (target) target.classList.add("active");
+
+      const buttons = document.querySelectorAll(".nav-btn");
+      buttons.forEach((b) => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+    }
+  </script>
+</body>
+</html>
